@@ -1,67 +1,51 @@
-import "./App.css"
-import { Counter } from "./features/counter/Counter"
-import { Quotes } from "./features/quotes/Quotes"
-import logo from "./logo.svg"
+import { useEffect } from "react"
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom"
+import { useAppDispatch, useAppSelector } from "./app/hooks"
+import { useGetUserDetailsQuery } from "./features/auth/authApiSlice"
+import {
+  setToken,
+  setUserDetails,
+  selectIsLoggedIn,
+} from "./features/auth/authSlice"
+import Login from "./components/Login"
+import Home from "./components/Home"
 
 const App = () => {
+  const dispatch = useAppDispatch()
+  const isLoggedIn = useAppSelector(selectIsLoggedIn)
+
+  // Get the token from local storage (if available)
+  const token = localStorage.getItem("token")
+
+  // Fetch user details when the app loads, only if there's a token
+  const { data: userDetails } = useGetUserDetailsQuery(undefined, {
+    skip: !token, // Skip the query if no token is present
+  })
+
+  useEffect(() => {
+    if (token) {
+      dispatch(setToken(token)) // Store token in Redux state
+
+      // If user details were fetched successfully, store them in Redux
+      if (userDetails) {
+        dispatch(
+          setUserDetails({ email: userDetails.email, name: userDetails.name }),
+        )
+      }
+    }
+  }, [token, userDetails, dispatch])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <Quotes />
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://reselect.js.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Reselect
-          </a>
-        </span>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route
+          path="/"
+          element={isLoggedIn ? <Home /> : <Navigate to="/login" />}
+        />
+        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Home />} /> {/* Example home route */}
+      </Routes>
+    </Router>
   )
 }
 
