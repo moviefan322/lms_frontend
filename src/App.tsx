@@ -1,5 +1,10 @@
 import { useEffect } from "react"
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom"
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom"
 import { useAppDispatch, useAppSelector } from "./app/hooks"
 import { useGetUserDetailsQuery } from "./features/auth/authApiSlice"
 import {
@@ -9,6 +14,7 @@ import {
 } from "./features/auth/authSlice"
 import Login from "./components/Login"
 import Home from "./components/Home"
+import Navbar from "./components/Navbar"
 
 const App = () => {
   const dispatch = useAppDispatch()
@@ -36,16 +42,20 @@ const App = () => {
   }, [token, userDetails, dispatch])
 
   return (
-    <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={isLoggedIn ? <Home /> : <Navigate to="/login" />}
-        />
-        <Route path="/login" element={<Login />} />
-        <Route path="/" element={<Home />} /> {/* Example home route */}
-      </Routes>
-    </Router>
+    <>
+      <Navbar />
+      <div className='navfill'></div>
+      <Router>
+        <Routes>
+          <Route
+            path="/"
+            element={isLoggedIn ? <Home /> : <Navigate to="/login" />}
+          />
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Home />} /> {/* Example home route */}
+        </Routes>
+      </Router>
+    </>
   )
 }
 

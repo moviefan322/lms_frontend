@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import type { RootState } from "../../app/store"
-import { setToken, setUserDetails, setError, setLoading } from "./authSlice"
+import { setToken, setUserDetails, setError, setLoading, logout } from "./authSlice"
 
 const baseUrl = import.meta.env.VITE_BACKEND_URL
   ? `${import.meta.env.VITE_BACKEND_URL}/api/user`
@@ -55,6 +55,7 @@ export const authApi = createApi({
         } catch (err) {
           dispatch(setError("Failed to fetch user details"))
           dispatch(setLoading(false))
+          dispatch(logout())
         }
       },
     }),

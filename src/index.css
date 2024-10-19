@@ -11,3 +11,15 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+nav {
+  height: 50px;
+  background-color: #333;
+  width: 100%;
+  position: fixed;
+  top: 0;
+}
+
+.navfill {
+  height: 50px;
+}
