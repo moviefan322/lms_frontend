@@ -1,4 +1,5 @@
 import { useAppSelector } from "../app/hooks"
+import League from "../components/league/League"
 
 function Home() {
   const { isLoggedIn, email } = useAppSelector(state => state.auth)
@@ -11,6 +12,8 @@ function Home() {
       {isLoggedIn ? <p>Welcome, {email}!</p> : <p>You are not logged in.</p>}
 
       <p>{isLoggedIn}</p>
+
+      <League />
     </div>
   )
 }

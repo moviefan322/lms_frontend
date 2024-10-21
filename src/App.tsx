@@ -12,8 +12,8 @@ import {
   setUserDetails,
   selectIsLoggedIn,
 } from "./features/auth/authSlice"
-import Login from "./components/Login"
-import Home from "./components/Home"
+import Login from "./pages/Login"
+import Home from "./pages/Home"
 import Navbar from "./components/Navbar"
 
 const App = () => {

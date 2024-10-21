@@ -1,17 +1,15 @@
 import type { Action, ThunkAction } from "@reduxjs/toolkit"
 import { combineReducers, configureStore } from "@reduxjs/toolkit"
 import { setupListeners } from "@reduxjs/toolkit/query"
-import { counterSlice } from "../features/counter/counterSlice"
-import { quotesApiSlice } from "../features/quotes/quotesApiSlice"
 import { authSlice } from "../features/auth/authSlice"
-import { authApi } from "../features/auth/authApiSlice" // Import RTK Query slice
+import { authApi } from "../features/auth/authApiSlice"
+import { leagueApi } from "../features/league/leagueApiSlice"
 
 // Combine all slices into the root reducer
 const rootReducer = combineReducers({
-  counter: counterSlice.reducer,
-  quotesApi: quotesApiSlice.reducer,
   auth: authSlice.reducer,
-  [authApi.reducerPath]: authApi.reducer, // Add the RTK Query reducer for authApi
+  [authApi.reducerPath]: authApi.reducer,
+  [leagueApi.reducerPath]: leagueApi.reducer,
 })
 
 export type RootState = ReturnType<typeof rootReducer>
@@ -22,8 +20,8 @@ export const makeStore = (preloadedState?: Partial<RootState>) => {
     middleware: getDefaultMiddleware => {
       // Add middleware for both RTK Query slices
       return getDefaultMiddleware().concat(
-        quotesApiSlice.middleware,
         authApi.middleware,
+        leagueApi.middleware,
       )
     },
     preloadedState,
