@@ -1,4 +1,6 @@
+import { useState } from "react"
 import { useFetchSeasonByIdQuery } from "../../features/league/leagueApiSlice"
+import NewSchedule from "./NewSchedule"
 
 interface SeasonDetailProps {
   seasonId: number
@@ -6,6 +8,7 @@ interface SeasonDetailProps {
 }
 
 const SeasonDetail = ({ seasonId, leagueId }: SeasonDetailProps) => {
+  const [toggleSchedule, setToggleSchedule] = useState<boolean>(false)
   const { data, error, isLoading } = useFetchSeasonByIdQuery({
     leagueId,
     seasonId,
@@ -17,23 +20,29 @@ const SeasonDetail = ({ seasonId, leagueId }: SeasonDetailProps) => {
 
   if (isLoading) return <p>Loading...</p>
 
-  if (data) return (
-    <>
-      <div>
-        <h1>Season Deatil</h1>
-        <p>id: {data.id}</p>
-        <p>active: {data.is_active}</p>
-        <p>name: {data.name}</p>
-        <p>year: {data.year}</p>
-      </div>
-      {!data.schedule && (
-        <>
-          <p>No schedule available</p>
-          <button>New Schedule</button>
-        </>
-      )}
-    </>
-  )
+  if (data)
+    return (
+      <>
+        <div>
+          <h1>Season Deatil</h1>
+          <p>id: {data.id}</p>
+          <p>active: {data.is_active}</p>
+          <p>name: {data.name}</p>
+          <p>year: {data.year}</p>
+        </div>
+        {!data.schedule && (
+          <>
+            <p>No schedule available</p>
+            <button onClick={() => setToggleSchedule(!toggleSchedule)}>
+              New Schedule
+            </button>
+            {toggleSchedule && (
+              <NewSchedule leagueId={leagueId} seasonId={seasonId} />
+            )}
+          </>
+        )}
+      </>
+    )
 }
 
 export default SeasonDetail

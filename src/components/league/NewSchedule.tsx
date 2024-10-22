@@ -7,14 +7,33 @@
 
 import { useState } from "react"
 import { format } from "date-fns"
+import { useCreateScheduleMutation } from "../../features/league/leagueApiSlice"
+
+interface NewScheduleProps {
+  leagueId: number
+  seasonId: number
+}
 
 const formattedTime = (timeString: string) =>
   format(new Date(timeString), "HH:mm:ss")
 
-const NewSchedule = () => {
+const NewSchedule = ({ leagueId, seasonId }: NewScheduleProps) => {
   const [startDate, setStartDate] = useState<string>("")
   const [numWeeks, setNumWeeks] = useState<number>(0)
   const [defaultStartTime, setDefaultStartTime] = useState<string>("")
+
+  const [createSchedule, { isLoading }] = useCreateScheduleMutation()
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    createSchedule({
+      leagueId,
+      seasonId,
+      start_date: startDate,
+      num_weeks: numWeeks,
+      default_start_time: defaultStartTime,
+    })
+  }
 
   return (
     <form>
@@ -42,7 +61,7 @@ const NewSchedule = () => {
           onChange={e => setDefaultStartTime(e.target.value)}
         />
       </label>
-      <button type="submit">Create Schedule</button>
+      <button onClick={handleSubmit}>Create Schedule</button>
     </form>
   )
 }
