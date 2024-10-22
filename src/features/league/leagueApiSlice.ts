@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import type { RootState } from "../../app/store"
+import type { League, Season, Schedule } from "../../types/redux"
 
 const baseUrl = import.meta.env.VITE_BACKEND_URL
   ? `${import.meta.env.VITE_BACKEND_URL}/api/league/`
@@ -23,15 +24,15 @@ export const leagueApi = createApi({
   }),
   tagTypes: ["League", "Season"],
   endpoints: builder => ({
-    fetchLeagues: builder.query({
+    fetchLeagues: builder.query<League[], void>({
       query: () => "/",
       providesTags: ["League"],
     }),
-    fetchLeagueById: builder.query({
+    fetchLeagueById: builder.query<League, number>({
       query: id => `/${id}/`,
       providesTags: ["League"],
     }),
-    createLeague: builder.mutation({
+    createLeague: builder.mutation<League, Partial<League>>({
       query: leagueData => ({
         url: "/",
         method: "POST",
@@ -39,7 +40,7 @@ export const leagueApi = createApi({
       }),
       invalidatesTags: ["League"],
     }),
-    updateLeague: builder.mutation({
+    updateLeague: builder.mutation<League, { id: number } & Partial<League>>({
       query: ({ id, ...leagueData }) => ({
         url: `/${id}/`,
         method: "PUT",
@@ -54,7 +55,7 @@ export const leagueApi = createApi({
       }),
       invalidatesTags: ["League"],
     }),
-    fetchSeasons: builder.query({
+    fetchSeasons: builder.query<Season[], number>({
       query: id => `/${id}/seasons/`,
       providesTags: ["Season"],
     }),
@@ -66,11 +67,17 @@ export const leagueApi = createApi({
       }),
       invalidatesTags: ["League", "Season"],
     }),
-    fetchSeasonById: builder.query({
+    fetchSeasonById: builder.query<
+      Season,
+      { leagueId: number; seasonId: number }
+    >({
       query: ({ leagueId, seasonId }) => `/${leagueId}/seasons/${seasonId}/`,
       providesTags: ["Season"],
     }),
-    updateSeason: builder.mutation({
+    updateSeason: builder.mutation<
+      Season,
+      { leagueId: number; seasonId: number } & Partial<Season>
+    >({
       query: ({ leagueId, seasonId, ...seasonData }) => ({
         url: `/${leagueId}/seasons/${seasonId}/`,
         method: "PUT",
@@ -85,7 +92,10 @@ export const leagueApi = createApi({
       }),
       invalidatesTags: ["Season"],
     }),
-    createSchedule: builder.mutation({
+    createSchedule: builder.mutation<
+      Schedule,
+      { leagueId: number; seasonId: number } & Partial<Schedule>
+    >({
       query: ({ leagueId, seasonId, ...scheduleData }) => ({
         url: `/${leagueId}/seasons/${seasonId}/schedule/`,
         method: "POST",
@@ -98,12 +108,22 @@ export const leagueApi = createApi({
         `/${leagueId}/seasons/${seasonId}/schedule/`,
       providesTags: ["Season"],
     }),
-    fetchScheduleById: builder.query({
+    fetchScheduleById: builder.query<
+      Schedule,
+      { leagueId: number; seasonId: number; scheduleId: number }
+    >({
       query: ({ leagueId, seasonId, scheduleId }) =>
         `/${leagueId}/seasons/${seasonId}/schedule/${scheduleId}/`,
       providesTags: ["Season"],
     }),
-    updateSchedule: builder.mutation({
+    updateSchedule: builder.mutation<
+      Schedule,
+      {
+        leagueId: number
+        seasonId: number
+        scheduleId: number
+      } & Partial<Schedule>
+    >({
       query: ({ leagueId, seasonId, scheduleId, ...scheduleData }) => ({
         url: `/${leagueId}/seasons/${seasonId}/schedule/${scheduleId}/`,
         method: "PUT",

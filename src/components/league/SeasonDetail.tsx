@@ -17,7 +17,7 @@ const SeasonDetail = ({ seasonId, leagueId }: SeasonDetailProps) => {
 
   if (isLoading) return <p>Loading...</p>
 
-  return (
+  if (data) return (
     <>
       <div>
         <h1>Season Deatil</h1>
