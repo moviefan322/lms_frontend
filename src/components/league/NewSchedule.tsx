@@ -7,7 +7,7 @@
 
 import { useState } from "react"
 import { format } from "date-fns"
-import { useCreateScheduleMutation } from "../../features/league/leagueApiSlice"
+import { useCreateScheduleMutation } from "../../features/schedule/scheduleApiSlice"
 
 interface NewScheduleProps {
   leagueId: number

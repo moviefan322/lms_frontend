@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useFetchSeasonByIdQuery } from "../../features/league/leagueApiSlice"
+import { useFetchSeasonByIdQuery } from "../../features/season/seasonApiSlice"
 import NewSchedule from "./NewSchedule"
 
 interface SeasonDetailProps {
@@ -33,12 +33,8 @@ const SeasonDetail = ({ seasonId, leagueId }: SeasonDetailProps) => {
         {!data.schedule && (
           <>
             <p>No schedule available</p>
-            <button onClick={() => setToggleSchedule(!toggleSchedule)}>
-              New Schedule
-            </button>
-            {toggleSchedule && (
-              <NewSchedule leagueId={leagueId} seasonId={seasonId} />
-            )}
+            <button onClick={() => setToggleSchedule(!toggleSchedule)}>New Schedule</button>
+            {toggleSchedule && <NewSchedule leagueId={leagueId} seasonId={seasonId} />}
           </>
         )}
       </>
