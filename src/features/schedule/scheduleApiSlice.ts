@@ -19,9 +19,12 @@ export const scheduleApi = createApi({
       return headers
     },
   }),
-  tagTypes: ["Schedule"],
+  tagTypes: ["Schedule", "Season"],
   endpoints: builder => ({
-    createSchedule: builder.mutation<Schedule, { leagueId: number; seasonId: number } & Partial<Schedule>>({
+    createSchedule: builder.mutation<
+      Schedule,
+      { leagueId: number; seasonId: number } & Partial<Schedule>
+    >({
       query: ({ leagueId, seasonId, ...scheduleData }) => ({
         url: `/${leagueId}/seasons/${seasonId}/schedule/`,
         method: "POST",
@@ -29,21 +32,42 @@ export const scheduleApi = createApi({
       }),
       invalidatesTags: ["Schedule"],
     }),
-    fetchScheduleById: builder.query<Schedule, { leagueId: number; seasonId: number; scheduleId: number }>({
-      query: ({ leagueId, seasonId, scheduleId }) => `/${leagueId}/seasons/${seasonId}/schedule/${scheduleId}/`,
+    fetchSchedule: builder.query<
+      Schedule,
+      { leagueId: number; seasonId: number }
+    >({
+      query: ({ leagueId, seasonId }) =>
+        `/${leagueId}/seasons/${seasonId}/schedule/`,
       providesTags: ["Schedule"],
     }),
-    updateSchedule: builder.mutation<Schedule, { leagueId: number; seasonId: number; scheduleId: number } & Partial<Schedule>>({
-      query: ({ leagueId, seasonId, scheduleId, ...scheduleData }) => ({
-        url: `/${leagueId}/seasons/${seasonId}/schedule/${scheduleId}/`,
+    updateSchedulePartial: builder.mutation<
+      Schedule,
+      { leagueId: number; seasonId: number } & Partial<Schedule>
+    >({
+      query: ({ leagueId, seasonId, ...scheduleData }) => ({
+        url: `/${leagueId}/seasons/${seasonId}/schedule/`,
+        method: "PATCH",
+        body: scheduleData,
+      }),
+      invalidatesTags: ["Schedule"],
+    }),
+    updateSchedule: builder.mutation<
+      Schedule,
+      { leagueId: number; seasonId: number } & Partial<Schedule>
+    >({
+      query: ({ leagueId, seasonId, ...scheduleData }) => ({
+        url: `/${leagueId}/seasons/${seasonId}/schedule/`,
         method: "PUT",
         body: scheduleData,
       }),
       invalidatesTags: ["Schedule"],
     }),
-    deleteSchedule: builder.mutation({
-      query: ({ leagueId, seasonId, scheduleId }) => ({
-        url: `/${leagueId}/seasons/${seasonId}/schedule/${scheduleId}/`,
+    deleteSchedule: builder.mutation<
+      { leagueId: number; seasonId: number },
+      { leagueId: number; seasonId: number }
+    >({
+      query: ({ leagueId, seasonId }) => ({
+        url: `/${leagueId}/seasons/${seasonId}/schedule/`,
         method: "DELETE",
       }),
       invalidatesTags: ["Schedule"],
@@ -51,4 +75,10 @@ export const scheduleApi = createApi({
   }),
 })
 
-export const { useCreateScheduleMutation, useFetchScheduleByIdQuery, useUpdateScheduleMutation, useDeleteScheduleMutation } = scheduleApi
+export const {
+  useCreateScheduleMutation,
+  useFetchScheduleQuery,
+  useUpdateScheduleMutation,
+  useUpdateSchedulePartialMutation,
+  useDeleteScheduleMutation,
+} = scheduleApi

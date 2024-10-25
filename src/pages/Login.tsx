@@ -1,5 +1,6 @@
 // Login.tsx
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import { useAppDispatch, useAppSelector } from "../app/hooks"
 import { useLoginMutation } from "../features/auth/authApiSlice"
 import { setToken, setError } from "../features/auth/authSlice"
@@ -10,6 +11,14 @@ const Login: React.FC = () => {
   const [login, { isLoading }] = useLoginMutation() // RTK Query mutation hook
   const dispatch = useAppDispatch()
   const { isLoggedIn, token } = useAppSelector(state => state.auth)
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/")
+    }
+  }, [isLoggedIn])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()

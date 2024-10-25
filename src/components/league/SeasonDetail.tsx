@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useFetchSeasonByIdQuery } from "../../features/season/seasonApiSlice"
 import NewSchedule from "./NewSchedule"
+import ScheduleManager from "../schedule/ScheduleManager"
 
 interface SeasonDetailProps {
   seasonId: number
@@ -9,6 +10,8 @@ interface SeasonDetailProps {
 
 const SeasonDetail = ({ seasonId, leagueId }: SeasonDetailProps) => {
   const [toggleSchedule, setToggleSchedule] = useState<boolean>(false)
+  const [toggleManageSchedule, setToggleManageSchedule] =
+    useState<boolean>(false)
   const { data, error, isLoading } = useFetchSeasonByIdQuery({
     leagueId,
     seasonId,
@@ -33,8 +36,24 @@ const SeasonDetail = ({ seasonId, leagueId }: SeasonDetailProps) => {
         {!data.schedule && (
           <>
             <p>No schedule available</p>
-            <button onClick={() => setToggleSchedule(!toggleSchedule)}>New Schedule</button>
-            {toggleSchedule && <NewSchedule leagueId={leagueId} seasonId={seasonId} />}
+            <button onClick={() => setToggleSchedule(!toggleSchedule)}>
+              New Schedule
+            </button>
+            {toggleSchedule && (
+              <NewSchedule leagueId={leagueId} seasonId={seasonId} />
+            )}
+          </>
+        )}
+        {data.schedule && (
+          <>
+            <button
+              onClick={() => setToggleManageSchedule(!toggleManageSchedule)}
+            >
+              Manage Schedule
+            </button>
+            {toggleManageSchedule && (
+              <ScheduleManager leagueId={leagueId} seasonId={seasonId} />
+            )}
           </>
         )}
       </>

@@ -29,10 +29,9 @@ export interface Season {
 
 export interface Schedule {
   id: number
-  start_date: string // ISO 8601 date string
+  default_start_time: string
   num_weeks: number
-  default_start_time: string // ISO 8601 time string
-  matchnights: MatchNight[]
+  start_date: string
 }
 
 export interface MatchNight {

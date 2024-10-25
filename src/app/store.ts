@@ -4,12 +4,16 @@ import { setupListeners } from "@reduxjs/toolkit/query"
 import { authSlice } from "../features/auth/authSlice"
 import { authApi } from "../features/auth/authApiSlice"
 import { leagueApi } from "../features/league/leagueApiSlice"
+import { seasonApi } from "../features/season/seasonApiSlice"
+import { scheduleApi } from "../features/schedule/scheduleApiSlice"
 
 // Combine all slices into the root reducer
 const rootReducer = combineReducers({
   auth: authSlice.reducer,
   [authApi.reducerPath]: authApi.reducer,
   [leagueApi.reducerPath]: leagueApi.reducer,
+  [seasonApi.reducerPath]: seasonApi.reducer,
+  [scheduleApi.reducerPath]: scheduleApi.reducer,
 })
 
 export type RootState = ReturnType<typeof rootReducer>
@@ -19,10 +23,7 @@ export const makeStore = (preloadedState?: Partial<RootState>) => {
     reducer: rootReducer,
     middleware: getDefaultMiddleware => {
       // Add middleware for both RTK Query slices
-      return getDefaultMiddleware().concat(
-        authApi.middleware,
-        leagueApi.middleware,
-      )
+      return getDefaultMiddleware().concat(authApi.middleware, leagueApi.middleware, seasonApi.middleware, scheduleApi.middleware)
     },
     preloadedState,
   })
@@ -39,9 +40,4 @@ export const store = makeStore()
 export type AppStore = typeof store
 // Infer the `AppDispatch` type from the store itself
 export type AppDispatch = AppStore["dispatch"]
-export type AppThunk<ThunkReturnType = void> = ThunkAction<
-  ThunkReturnType,
-  RootState,
-  unknown,
-  Action
->
+export type AppThunk<ThunkReturnType = void> = ThunkAction<ThunkReturnType, RootState, unknown, Action>
