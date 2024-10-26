@@ -18,6 +18,30 @@ export interface League {
   seasons: Season[]
 }
 
+export interface Player {
+  id: number
+  is_active: boolean
+  name: string
+}
+
+export interface TeamPlayer {
+  id: number
+  handicap: number
+  is_active: boolean
+  wins: number
+  losses: number
+  player: string
+}
+
+export interface TeamSeason {
+  id: number
+  name: string
+  captain: string
+  team: number
+  season: number
+  team_players: TeamPlayer[]
+}
+
 export interface Season {
   id: number
   name: string
@@ -25,6 +49,7 @@ export interface Season {
   is_active: boolean
   league: number
   schedule?: Schedule
+  teamseason: TeamSeason[]
 }
 
 export interface Schedule {

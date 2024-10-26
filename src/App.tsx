@@ -15,24 +15,24 @@ import {
 import Login from "./pages/Login"
 import Home from "./pages/Home"
 import Navbar from "./components/Navbar"
+import ManageTeams from "./components/teams/ManageTeams"
+
+const PrivateRoute = ({ element }: { element: React.ReactNode }) => {
+  const isLoggedIn = useAppSelector(selectIsLoggedIn)
+  return isLoggedIn ? element : <Navigate to="/login" />
+}
 
 const App = () => {
   const dispatch = useAppDispatch()
-  const isLoggedIn = useAppSelector(selectIsLoggedIn)
 
-  // Get the token from local storage (if available)
   const token = localStorage.getItem("token")
-
-  // Fetch user details when the app loads, only if there's a token
   const { data: userDetails } = useGetUserDetailsQuery(undefined, {
-    skip: !token, // Skip the query if no token is present
+    skip: !token,
   })
 
   useEffect(() => {
     if (token) {
-      dispatch(setToken(token)) // Store token in Redux state
-
-      // If user details were fetched successfully, store them in Redux
+      dispatch(setToken(token))
       if (userDetails) {
         dispatch(
           setUserDetails({ email: userDetails.email, name: userDetails.name }),
@@ -42,20 +42,15 @@ const App = () => {
   }, [token, userDetails, dispatch])
 
   return (
-    <>
+    <Router>
       <Navbar />
-      <div className='navfill'></div>
-      <Router>
-        <Routes>
-          <Route
-            path="/"
-            element={isLoggedIn ? <Home /> : <Navigate to="/login" />}
-          />
-          <Route path="/login" element={<Login />} />
-          <Route path="/" element={<Home />} /> 
-        </Routes>
-      </Router>
-    </>
+      <div className="navfill"></div>
+      <Routes>
+        <Route path="/" element={<PrivateRoute element={<Home />} />} />
+        <Route path="/manage-teams/:leagueId/:seasonId" element={<PrivateRoute element={<ManageTeams />} />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </Router>
   )
 }
 

@@ -1,6 +1,7 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { useFetchSeasonByIdQuery } from "../../features/season/seasonApiSlice"
-import NewSchedule from "./NewSchedule"
+import NewSchedule from "../schedule/NewSchedule"
 import ScheduleManager from "../schedule/ScheduleManager"
 
 interface SeasonDetailProps {
@@ -12,14 +13,24 @@ const SeasonDetail = ({ seasonId, leagueId }: SeasonDetailProps) => {
   const [toggleSchedule, setToggleSchedule] = useState<boolean>(false)
   const [toggleManageSchedule, setToggleManageSchedule] =
     useState<boolean>(false)
+
+  const navigate = useNavigate()
+
+
   const { data, error, isLoading } = useFetchSeasonByIdQuery({
     leagueId,
     seasonId,
   })
 
+
+  const navToManageTeams = () => {
+    navigate(`/manage-teams/${leagueId}/${seasonId}`)
+  }
   console.log(data)
   console.log(error)
   console.log(isLoading)
+
+  if (error) return <p>Error!</p>
 
   if (isLoading) return <p>Loading...</p>
 
@@ -32,6 +43,9 @@ const SeasonDetail = ({ seasonId, leagueId }: SeasonDetailProps) => {
           <p>active: {data.is_active}</p>
           <p>name: {data.name}</p>
           <p>year: {data.year}</p>
+        </div>
+        <div>
+          <button onClick={navToManageTeams}>Manage Teams</button>
         </div>
         {!data.schedule && (
           <>

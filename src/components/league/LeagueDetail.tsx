@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useFetchLeagueByIdQuery } from "../../features/league/leagueApiSlice"
-import SeasonDetail from "./SeasonDetail"
+import SeasonDetail from "../season/SeasonDetail"
 
 interface LeagueDetailProps {
   id: number
