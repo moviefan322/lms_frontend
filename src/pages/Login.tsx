@@ -8,7 +8,7 @@ import { setToken, setError } from "../features/auth/authSlice"
 const Login: React.FC = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [login, { isLoading }] = useLoginMutation() // RTK Query mutation hook
+  const [login, { isLoading }] = useLoginMutation()
   const dispatch = useAppDispatch()
   const { isLoggedIn, token } = useAppSelector(state => state.auth)
 
@@ -18,13 +18,13 @@ const Login: React.FC = () => {
     if (isLoggedIn) {
       navigate("/")
     }
-  }, [isLoggedIn])
+  }, [isLoggedIn, navigate])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      const { token } = await login({ email, password }).unwrap() // Call login mutation
-      dispatch(setToken(token)) // Set the token in the Redux store
+      const { token } = await login({ email, password }).unwrap()
+      dispatch(setToken(token))
     } catch (error) {
       dispatch(setError("Login failed"))
     }
