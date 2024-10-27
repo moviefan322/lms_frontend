@@ -24,6 +24,13 @@ export interface Player {
   name: string
 }
 
+export interface Team {
+  id: number
+  name: string
+  league: number
+  team_seasons: TeamSeason[]
+}
+
 export interface TeamPlayer {
   id: number
   handicap: number
