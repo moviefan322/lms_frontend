@@ -30,13 +30,13 @@ export interface TeamPlayer {
   is_active: boolean
   wins: number
   losses: number
-  player: string
+  player: Player
 }
 
 export interface TeamSeason {
   id: number
   name: string
-  captain: string
+  captain: number
   team: number
   season: number
   team_players: TeamPlayer[]

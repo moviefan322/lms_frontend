@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { useParams } from "react-router-dom"
 import { useFetchSeasonByIdQuery } from "../../features/season/seasonApiSlice"
 import {
@@ -5,8 +6,10 @@ import {
   useFetchTeamSeasonsQuery,
 } from "../../features/teamseason/teamSeasonApiSlice"
 import { useErrorHandling } from "../../hooks/useErrorHandling"
+import EditTeam from "./EditTeam"
 
 const ManageTeams = () => {
+  const [showEdit, setShowEdit] = useState<number | null>(null) // Track the team ID for editing
   const { leagueId, seasonId } = useParams()
   const [deleteTeamSeason] = useDeleteTeamSeasonMutation()
   const { data: seasonData } = useFetchSeasonByIdQuery({
@@ -31,19 +34,20 @@ const ManageTeams = () => {
       }).unwrap()
     } catch (error) {
       console.error("Failed to delete team season:", error)
-      console.log(
-        `Deleting at: ${leagueId}/seasons/${seasonId}/teamseasons/${id}/`,
-      )
     }
+  }
+
+  const toggleEdit = (id: number) => {
+    setShowEdit(prevId => (prevId === id ? null : id)) // Toggle the edit form for the specific team
   }
 
   if (isLoading) return <p>Loading...</p>
   if (error) {
     console.error("Error fetching team seasons:", error)
-
     return errorMessage
   }
 
+  console.log(data, seasonData)
   if (data && seasonData)
     return (
       <>
@@ -59,9 +63,20 @@ const ManageTeams = () => {
             {data.map((team: any) => (
               <li key={team.id}>
                 <p>
-                  {team.name} = {team.id} <button>Edit</button>
-                  <button onClick={() => handleDelete(team.id)}>X</button>
+                  {team.name} = {team.id}{" "}
                 </p>
+                <p> Capitan: {team.captain} </p>
+                <button onClick={() => toggleEdit(team.id)}>Edit</button>
+                <button onClick={() => handleDelete(team.id)}>X</button>
+                {showEdit === team.id && (
+                  <EditTeam
+                    leagueId={parseInt(leagueId as string)}
+                    seasonId={parseInt(seasonId as string)}
+                    teamId={team.id}
+                    teamData={team}
+                    setShowEdit={setShowEdit}
+                  />
+                )}
               </li>
             ))}
           </ul>
