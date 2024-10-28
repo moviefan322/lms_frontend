@@ -9,6 +9,7 @@ import { scheduleApi } from "../features/schedule/scheduleApiSlice"
 import { teamSeasonApi } from "../features/teamseason/teamSeasonApiSlice"
 import { teamApi } from "../features/team/teamApiSlice"
 import { playerApi } from "../features/player/playerApiSlice"
+import {teamPlayerApi} from "../features/teamplayer/teamPlayerApiSlice"
 
 // Combine all slices into the root reducer
 const rootReducer = combineReducers({
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   [teamSeasonApi.reducerPath]: teamSeasonApi.reducer,
   [teamApi.reducerPath]: teamApi.reducer,
   [playerApi.reducerPath]: playerApi.reducer,
+  [teamPlayerApi.reducerPath]: teamPlayerApi.reducer,
 })
 
 export type RootState = ReturnType<typeof rootReducer>
@@ -37,6 +39,7 @@ export const makeStore = (preloadedState?: Partial<RootState>) => {
         teamSeasonApi.middleware,
         teamApi.middleware,
         playerApi.middleware,
+        teamPlayerApi.middleware
       )
     },
     preloadedState,
