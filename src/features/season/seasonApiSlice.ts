@@ -27,7 +27,7 @@ export const seasonApi = createApi({
     }),
     fetchSeasonById: builder.query<Season, { leagueId: number; seasonId: number }>({
       query: ({ leagueId, seasonId }) => `/${leagueId}/seasons/${seasonId}/`,
-      providesTags: ["Season"],
+      providesTags: (result, error, { seasonId }) => [{ type: "Season", id: seasonId }],
     }),
     createSeason: builder.mutation({
       query: ({ leagueId, ...seasonData }) => ({

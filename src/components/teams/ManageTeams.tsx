@@ -13,7 +13,7 @@ const ManageTeams = () => {
   const [showEdit, setShowEdit] = useState<number | null>(null) // Track the team ID for editing
   const { leagueId, seasonId } = useParams()
   const [deleteTeamSeason] = useDeleteTeamSeasonMutation()
-  const { data: seasonData } = useFetchSeasonByIdQuery({
+  const { data: seasonData, refetch } = useFetchSeasonByIdQuery({
     leagueId: parseInt(leagueId as string),
     seasonId: parseInt(seasonId as string),
   })

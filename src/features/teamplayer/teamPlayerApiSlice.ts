@@ -1,35 +1,41 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import type { RootState } from '../../app/store';
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
+import type { RootState } from "../../app/store"
 
-const baseUrl = `${import.meta.env.VITE_BACKEND_URL}`;
+const baseUrl = `${import.meta.env.VITE_BACKEND_URL}`
 
 export const teamPlayerApi = createApi({
-  reducerPath: 'teamPlayerApi',
+  reducerPath: "teamPlayerApi",
   baseQuery: fetchBaseQuery({
     baseUrl,
     prepareHeaders: (headers, { getState }) => {
-      const state = getState() as RootState;
-      const token = state.auth.token;
+      const state = getState() as RootState
+      const token = state.auth.token
 
       if (token) {
-        headers.set('Authorization', `Token ${token}`);
+        headers.set("Authorization", `Token ${token}`)
       }
 
-      return headers;
+      return headers
     },
   }),
-  endpoints: (builder) => ({
+  tagTypes: ["TeamPlayer", "TeamSeason", "Season", "League"],
+  endpoints: builder => ({
     fetchTeamPlayers: builder.query({
       query: ({ leagueId, seasonId, teamSeasonId }) =>
         `/api/league/${leagueId}/seasons/${seasonId}/teamseasons/${teamSeasonId}/teamplayers/`,
+      providesTags: (result, error, { seasonId }) => [
+        { type: "TeamSeason", id: seasonId },
+        { type: "TeamPlayer", id: seasonId },
+      ],
     }),
     createTeamPlayer: builder.mutation({
       query: ({ leagueId, seasonId, teamSeasonId, newTeamPlayer }) => ({
         url: `/api/league/${leagueId}/seasons/${seasonId}/teamseasons/${teamSeasonId}/teamplayers/`,
-        method: 'POST',
+        method: "POST",
         body: newTeamPlayer,
       }),
     }),
+
     fetchTeamPlayerById: builder.query({
       query: ({ leagueId, seasonId, teamSeasonId, id }) =>
         `/api/league/${leagueId}/seasons/${seasonId}/teamseasons/${teamSeasonId}/teamplayers/${id}/`,
@@ -37,25 +43,31 @@ export const teamPlayerApi = createApi({
     updateTeamPlayer: builder.mutation({
       query: ({ leagueId, seasonId, teamSeasonId, id, updatedTeamPlayer }) => ({
         url: `/api/league/${leagueId}/seasons/${seasonId}/teamseasons/${teamSeasonId}/teamplayers/${id}/`,
-        method: 'PUT',
+        method: "PUT",
         body: updatedTeamPlayer,
       }),
     }),
     partialUpdateTeamPlayer: builder.mutation({
       query: ({ leagueId, seasonId, teamSeasonId, id, partialTeamPlayer }) => ({
         url: `/api/league/${leagueId}/seasons/${seasonId}/teamseasons/${teamSeasonId}/teamplayers/${id}/`,
-        method: 'PATCH',
+        method: "PATCH",
         body: partialTeamPlayer,
       }),
     }),
     deleteTeamPlayer: builder.mutation({
       query: ({ leagueId, seasonId, teamSeasonId, id }) => ({
         url: `/api/league/${leagueId}/seasons/${seasonId}/teamseasons/${teamSeasonId}/teamplayers/${id}/`,
-        method: 'DELETE',
+        method: "DELETE",
       }),
+      invalidatesTags: (result, error, { seasonId }) => [
+        { type: "Season", id: seasonId },
+        { type: "TeamPlayer" },
+        { type: "TeamSeason" },
+        { type: "Season", id: seasonId },
+      ],
     }),
   }),
-});
+})
 
 export const {
   useFetchTeamPlayersQuery,
@@ -64,4 +76,4 @@ export const {
   useUpdateTeamPlayerMutation,
   usePartialUpdateTeamPlayerMutation,
   useDeleteTeamPlayerMutation,
-} = teamPlayerApi;
+} = teamPlayerApi

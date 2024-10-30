@@ -34,6 +34,8 @@ const AddTeam = ({ leagueId, seasonId }: AddTeamProps) => {
   const [captain, setCaptain] = useState(0)
   const [successName, setSuccessName] = useState("")
   const [valError, setValError] = useState("")
+  const [showSelect, setShowSelect] = useState(false)
+
   const {
     data: playersData,
     error: playersError,
@@ -138,14 +140,23 @@ const AddTeam = ({ leagueId, seasonId }: AddTeamProps) => {
           onChange={e => setName(e.target.value)}
         ></input>
         <label htmlFor="captain">Captain:</label>
-        <select value={captain} onChange={e => setCaptain(+e.target.value)}>
-          <option value="">--</option>
-          {playersData?.map((player: Player, index: number) => (
-            <option key={index} value={player.id}>
-              {player.name}
-            </option>
-          ))}
-        </select>
+        {showSelect ? (
+          <select value={captain} onChange={e => setCaptain(+e.target.value)}>
+            <option value="">--</option>
+            {playersData?.map((player: Player, index: number) => (
+              <option key={index} value={player.id}>
+                {player.name}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <>
+            {" "}
+            <button onClick={() => setShowSelect(!showSelect)}>Choose Captain</button>
+            <button>Add New Player</button>
+          </>
+        )}
+
         <button type="submit">Submit</button>
         {isTeamError && errorMessage}
         {valError && <p>{valError}</p>}

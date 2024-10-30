@@ -33,6 +33,7 @@ export interface Team {
 
 export interface TeamPlayer {
   id: number
+  name: string
   handicap: number
   is_active: boolean
   wins: number
