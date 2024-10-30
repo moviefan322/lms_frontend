@@ -29,3 +29,38 @@ nav {
   padding: 2rem;
   width: 50%;
 }
+
+.flex {
+  width: 90%;
+  border: red 1px solid;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem; /* Space between cards */
+  justify-content: flex-start; /* Aligns items at the start */
+  align-items: flex-start;
+  padding: 5rem;
+}
+
+.card {
+  flex: 1 1 20%;
+  border: 1px solid black;
+  list-style: none;
+  padding: 1rem;
+  box-sizing: border-box; /* Ensures padding doesn’t add to width */
+}
+
+.card * {
+  border: 1px solid black;
+  padding: 1rem;
+  margin: auto;
+  text-align: center;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  align-items: center;
+  padding: 5rem;
+}

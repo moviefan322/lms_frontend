@@ -51,36 +51,44 @@ const ManageTeams = () => {
   if (data && seasonData)
     return (
       <>
-        <div>
-          <h1>Manage Teams</h1>
-          <p>Season: {seasonData.name}</p>
-          <p>Year: {seasonData.year}</p>
+        <div className="container">
+          <div>
+            <h1>Manage Teams</h1>
+            <p>Season: {seasonData.name}</p>
+            <p>Year: {seasonData.year}</p>
+          </div>
+          <div>
+            <button>Add Team</button>
+          </div>
+          {data.length === 0 ? (
+            <p>No teams available</p>
+          ) : (
+            <ul className="flex">
+              {data.map((team: any) => (
+                <li key={team.id} className="card">
+                  <p>
+                    {team.name} = {team.id}{" "}
+                  </p>
+                  <p> Capitan: {team.captain} </p>
+                  <div>
+                    <button onClick={() => toggleEdit(team.id)}>Edit</button>
+                    <button onClick={() => handleDelete(team.id)}>X</button>
+                  </div>
+                  {showEdit === team.id && (
+                    <EditTeam
+                      leagueId={parseInt(leagueId as string)}
+                      seasonId={parseInt(seasonId as string)}
+                      teamId={team.id}
+                      teamData={team}
+                      setShowEdit={setShowEdit}
+                    />
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+          <div></div>
         </div>
-        {data.length === 0 ? (
-          <p>No teams available</p>
-        ) : (
-          <ul>
-            {data.map((team: any) => (
-              <li key={team.id}>
-                <p>
-                  {team.name} = {team.id}{" "}
-                </p>
-                <p> Capitan: {team.captain} </p>
-                <button onClick={() => toggleEdit(team.id)}>Edit</button>
-                <button onClick={() => handleDelete(team.id)}>X</button>
-                {showEdit === team.id && (
-                  <EditTeam
-                    leagueId={parseInt(leagueId as string)}
-                    seasonId={parseInt(seasonId as string)}
-                    teamId={team.id}
-                    teamData={team}
-                    setShowEdit={setShowEdit}
-                  />
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
       </>
     )
 }
