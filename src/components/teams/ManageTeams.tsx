@@ -7,6 +7,7 @@ import {
 } from "../../features/teamseason/teamSeasonApiSlice"
 import { useErrorHandling } from "../../hooks/useErrorHandling"
 import EditTeam from "./EditTeam"
+import AddTeam from "./AddTeam"
 
 const ManageTeams = () => {
   const [showEdit, setShowEdit] = useState<number | null>(null) // Track the team ID for editing
@@ -59,6 +60,10 @@ const ManageTeams = () => {
           </div>
           <div>
             <button>Add Team</button>
+            <AddTeam
+              leagueId={parseInt(leagueId as string)}
+              seasonId={parseInt(seasonId as string)}
+            />
           </div>
           {data.length === 0 ? (
             <p>No teams available</p>
