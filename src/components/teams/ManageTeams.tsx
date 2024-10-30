@@ -48,7 +48,7 @@ const ManageTeams = () => {
     return errorMessage
   }
 
-  console.log(data, seasonData)
+  console.log(data)
   if (data && seasonData)
     return (
       <>
@@ -71,15 +71,7 @@ const ManageTeams = () => {
             <ul className="flex">
               {data.map((team: any) => (
                 <li key={team.id} className="card">
-                  <p>
-                    {team.name} = {team.id}{" "}
-                  </p>
-                  <p> Capitan: {team.captain} </p>
-                  <div>
-                    <button onClick={() => toggleEdit(team.id)}>Edit</button>
-                    <button onClick={() => handleDelete(team.id)}>X</button>
-                  </div>
-                  {showEdit === team.id && (
+                  {showEdit === team.id ? (
                     <EditTeam
                       leagueId={parseInt(leagueId as string)}
                       seasonId={parseInt(seasonId as string)}
@@ -87,6 +79,20 @@ const ManageTeams = () => {
                       teamData={team}
                       setShowEdit={setShowEdit}
                     />
+                  ) : (
+                    <div>
+                      {" "}
+                      <p>
+                        {team.name} = {team.id}{" "}
+                      </p>
+                      <p> Capitan: {team.captain_name} </p>
+                      <div>
+                        <button onClick={() => toggleEdit(team.id)}>
+                          Edit
+                        </button>
+                        <button onClick={() => handleDelete(team.id)}>X</button>
+                      </div>
+                    </div>
                   )}
                 </li>
               ))}

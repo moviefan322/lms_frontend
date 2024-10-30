@@ -1,7 +1,17 @@
-import { useState, useEffect } from "react"
+import {
+  useState,
+  useEffect,
+  JSXElementConstructor,
+  Key,
+  ReactElement,
+  ReactNode,
+  ReactPortal,
+} from "react"
 import { useCreateTeamMutation } from "../../features/team/teamApiSlice"
 import { useCreateTeamSeasonMutation } from "../../features/teamseason/teamSeasonApiSlice"
-import { set } from "date-fns"
+import { useFetchPlayersByLeagueQuery } from "../../features/player/playerApiSlice"
+import { useErrorHandling } from "../../hooks/useErrorHandling"
+import type { Player } from "../../types/redux"
 
 interface AddTeamProps {
   leagueId: number
@@ -15,9 +25,20 @@ interface TeamSeasonPayload {
   captain: number
 }
 
+interface PlayersData {
+  data: Player[]
+}
+
 const AddTeam = ({ leagueId, seasonId }: AddTeamProps) => {
   const [name, setName] = useState("")
-  const [captain, setCaptain] = useState("")
+  const [captain, setCaptain] = useState(0)
+  const [successName, setSuccessName] = useState("")
+  const [valError, setValError] = useState("")
+  const {
+    data: playersData,
+    error: playersError,
+    isLoading: playersLoading,
+  } = useFetchPlayersByLeagueQuery(leagueId)
   const [
     addTeam,
     {
@@ -27,6 +48,7 @@ const AddTeam = ({ leagueId, seasonId }: AddTeamProps) => {
       error: teamError,
     },
   ] = useCreateTeamMutation()
+  const errorMessage = useErrorHandling(teamError as any)
   const [
     addTeamSeason,
     {
@@ -36,6 +58,12 @@ const AddTeam = ({ leagueId, seasonId }: AddTeamProps) => {
       error: teamSeasonError,
     },
   ] = useCreateTeamSeasonMutation()
+  const errorMessageTeamSeason = useErrorHandling(teamSeasonError as any)
+
+  useEffect(() => {
+    setName("")
+    setCaptain(0)
+  }, [isTeamSeasonSuccess])
 
   const postTeamSeason = async (teamSeasonPayload: TeamSeasonPayload) => {
     console.log("teamSeasonPayload", teamSeasonPayload)
@@ -51,6 +79,12 @@ const AddTeam = ({ leagueId, seasonId }: AddTeamProps) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    const validationError = checkValidation()
+    if (validationError) {
+      console.error("Validation error:", validationError)
+      setValError(validationError)
+      return
+    }
     try {
       const payload = {
         leagueId,
@@ -58,6 +92,7 @@ const AddTeam = ({ leagueId, seasonId }: AddTeamProps) => {
         name,
       }
       console.log("payload", payload)
+      setSuccessName(name)
 
       const res = await addTeam({
         ...payload,
@@ -68,13 +103,28 @@ const AddTeam = ({ leagueId, seasonId }: AddTeamProps) => {
           name: res.name,
           team: res.id,
           season: seasonId,
-          captain: 1,
+          captain: +captain,
         })
       }
     } catch (error) {
       console.error("Failed to add team:", error)
     }
   }
+
+  const checkValidation = () => {
+    if (!name) {
+      return "Please enter a team name."
+    }
+    if (!captain) {
+      return "Please select a captain."
+    }
+    return ""
+  }
+
+  if (isTeamLoading || isTeamSeasonLoading || playersLoading)
+    return <p>Loading...</p>
+
+  console.log(playersData)
 
   return (
     <div className="flex">
@@ -88,14 +138,19 @@ const AddTeam = ({ leagueId, seasonId }: AddTeamProps) => {
           onChange={e => setName(e.target.value)}
         ></input>
         <label htmlFor="captain">Captain:</label>
-        <input
-          type="text"
-          id="captain"
-          name="captain"
-          value={captain}
-          onChange={e => setCaptain(e.target.value)}
-        ></input>
+        <select value={captain} onChange={e => setCaptain(+e.target.value)}>
+          <option value="">--</option>
+          {playersData?.map((player: Player, index: number) => (
+            <option key={index} value={player.id}>
+              {player.name}
+            </option>
+          ))}
+        </select>
         <button type="submit">Submit</button>
+        {isTeamError && errorMessage}
+        {valError && <p>{valError}</p>}
+        {isTeamSeasonError && errorMessageTeamSeason}
+        {isTeamSeasonSuccess && <p>{successName} added successfully!</p>}
       </form>
     </div>
   )

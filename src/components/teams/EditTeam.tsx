@@ -30,7 +30,7 @@ const EditTeam = ({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     try {
-      const res = await updateTeamSeason({
+      await updateTeamSeason({
         leagueId,
         seasonId,
         id: teamId,
@@ -62,16 +62,19 @@ const EditTeam = ({
           value={captain}
           onChange={e => setCaptain(parseInt(e.target.value))}
         >
-          {teamData.team_players.map(player => (
-            <option key={player.player.id} value={player.player.id}>
+          {teamData.team_players.map((player, i) => (
+            <option key={i} value={player.player.id}>
               {player.player.name}
             </option>
           ))}
         </select>
 
-        <button type="submit" disabled={isLoading}>
-          Submit
-        </button>
+        <div>
+          <button type="submit" disabled={isLoading}>
+            Submit
+          </button>
+          <button onClick={() => setShowEdit(null)}>Cancel</button>
+        </div>
       </form>
 
       {isLoading && <p>Updating team...</p>}

@@ -49,8 +49,8 @@ nav {
   box-sizing: border-box; /* Ensures padding doesn’t add to width */
 }
 
-.card * {
-  border: 1px solid black;
+.card > * {
+  border: 1px dashed black;
   padding: 1rem;
   margin: auto;
   text-align: center;
