@@ -4,11 +4,18 @@ import { useParams } from "react-router-dom"
 import type { TeamPlayer } from "../../types/redux"
 
 interface TeamRosterProps {
-  data: TeamPlayer[]
   teamSeasonId: number
+  setShowRoster: (show: boolean) => void
+  showRoster: boolean
+  name: string
 }
 
-const TeamRoster = (roster: TeamRosterProps) => {
+const TeamRoster = ({
+  teamSeasonId,
+  setShowRoster,
+  showRoster,
+  name
+}: TeamRosterProps) => {
   const { leagueId, seasonId } = useParams()
   const [deleteTeamPlayer, { isSuccess, isLoading, isError, error }] =
     useDeleteTeamPlayerMutation()
@@ -20,7 +27,7 @@ const TeamRoster = (roster: TeamRosterProps) => {
   } = useFetchTeamPlayersQuery({
     leagueId: parseInt(leagueId as string),
     seasonId: parseInt(seasonId as string),
-    teamSeasonId: roster.teamSeasonId,
+    teamSeasonId: teamSeasonId,
   })
 
   const handleDelete = async (id: number) => {
@@ -28,7 +35,7 @@ const TeamRoster = (roster: TeamRosterProps) => {
       await deleteTeamPlayer({
         leagueId,
         seasonId,
-        teamSeasonId: roster.teamSeasonId,
+        teamSeasonId: teamSeasonId,
         id,
       }).unwrap()
     } catch (error) {
@@ -43,17 +50,25 @@ const TeamRoster = (roster: TeamRosterProps) => {
     return <p>Error fetching team players</p>
   }
 
+  console.log('tpd', teamPlayersData)
   return (
     <div>
-      <h2>Team Roster</h2>
+      <h2>{name} Roster</h2>
       <ul>
         {teamPlayersData.map((player: TeamPlayer) => (
           <div key={player.id}>
-            <li>{player.name}</li>
-            <button onClick={() => handleDelete(player.id)}>X</button>
+            <li className="list-nodec text-right">
+              {player.name}{" "}
+              <button onClick={() => handleDelete(player.id)}>X</button>
+            </li>
           </div>
         ))}
       </ul>
+      <br />
+      <div className="flex-around">
+        <button>Add Player</button>
+        <button onClick={() => setShowRoster(!showRoster)}>Close</button>
+      </div>
     </div>
   )
 }

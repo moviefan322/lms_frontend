@@ -21,6 +21,7 @@ const EditTeam = ({
 }: EditTeamProps) => {
   const [captain, setCaptain] = useState(teamData.captain)
   const [name, setName] = useState(teamData.name)
+  const [showRoster, setShowRoster] = useState(false)
 
   const [updateTeamSeason, { isSuccess, isLoading, isError, error }] =
     useUpdateTeamSeasonPartialMutation()
@@ -46,45 +47,61 @@ const EditTeam = ({
 
   return (
     <div>
-      <div>
-        {" "}
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="name">Name:</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={name}
-            onChange={e => setName(e.target.value)}
-          />
+      {showRoster ? (
+        <TeamRoster
+          teamSeasonId={teamData.id}
+          setShowRoster={setShowRoster}
+          showRoster={showRoster}
+          name={teamData.name}
+        />
+      ) : (
+        <div>
+          {" "}
+          <form onSubmit={handleSubmit}>
+            <label htmlFor="name">Name:</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={name}
+              onChange={e => setName(e.target.value)}
+            />
 
-          <label htmlFor="captain">Captain:</label>
-          <select
-            name="captain"
-            id="captain-select"
-            value={captain}
-            onChange={e => setCaptain(parseInt(e.target.value))}
-          >
-            {teamData.team_players.map((player, i) => (
-              <option key={i} value={player.player.id}>
-                {player.player.name}
-              </option>
-            ))}
-          </select>
+            <label htmlFor="captain">Captain:</label>
+            <select
+              name="captain"
+              id="captain-select"
+              value={captain}
+              onChange={e => setCaptain(parseInt(e.target.value))}
+            >
+              {teamData.team_players.map((player, i) => (
+                <option key={i} value={player.player.id}>
+                  {player.player.name}
+                </option>
+              ))}
+            </select>
 
-          <div>
-            <button>Manage Roster</button>
-            <button type="submit" disabled={isLoading}>
-              Submit
-            </button>
-            <button onClick={() => setShowEdit(null)}>Cancel</button>
-          </div>
-        </form>
-        {isLoading && <p>Updating team...</p>}
-        {isError && errorMessage}
-        {isSuccess && <p>Team updated successfully!</p>}
-      </div>
-      <TeamRoster data={teamData.team_players} teamSeasonId={teamData.id} />
+            <div>
+              <button
+                onClick={e => {
+                  e.preventDefault()
+                  setShowRoster(!showRoster)
+                }}
+              >
+                Manage Roster
+              </button>
+
+              <button type="submit" disabled={isLoading}>
+                Submit
+              </button>
+              <button onClick={() => setShowEdit(null)}>Cancel</button>
+            </div>
+          </form>
+          {isLoading && <p>Updating team...</p>}
+          {isError && errorMessage}
+          {isSuccess && <p>Team updated successfully!</p>}
+        </div>
+      )}
     </div>
   )
 }

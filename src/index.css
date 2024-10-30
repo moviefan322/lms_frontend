@@ -74,3 +74,16 @@ nav {
   padding: 1rem;
   box-sizing: border-box;
 }
+
+.list-nodec {
+  list-style: none;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.flex-around {
+  display: flex;
+  justify-content: space-around;
+}
