@@ -34,6 +34,12 @@ export const teamPlayerApi = createApi({
         method: "POST",
         body: newTeamPlayer,
       }),
+      invalidatesTags: (result, error, { seasonId }) => [
+        { type: "Season", id: seasonId },
+        { type: "TeamPlayer" },
+        { type: "TeamSeason" },
+        { type: "Season", id: seasonId },
+      ],
     }),
 
     fetchTeamPlayerById: builder.query({

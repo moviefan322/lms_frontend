@@ -37,7 +37,9 @@ const AddTeam = ({ leagueId, seasonId }: AddTeamProps) => {
     data: playersData2,
     error: playersError2,
     isLoading: playersLoading2,
-  } = useFetchPlayerByIdQuery(captain)
+  } = useFetchPlayerByIdQuery(captain, {
+    skip: captain === 0,
+  })
 
   const {
     data: playersData,
