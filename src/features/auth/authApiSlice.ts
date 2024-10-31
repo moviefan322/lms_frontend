@@ -1,6 +1,13 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import type { RootState } from "../../app/store"
-import { setToken, setUserDetails, setError, setLoading, logout } from "./authSlice"
+import type { PostUserReq, PostUserRes } from "../../types/redux"
+import {
+  setToken,
+  setUserDetails,
+  setError,
+  setLoading,
+  logout,
+} from "./authSlice"
 
 const baseUrl = import.meta.env.VITE_BACKEND_URL
   ? `${import.meta.env.VITE_BACKEND_URL}/api/user`
@@ -59,7 +66,18 @@ export const authApi = createApi({
         }
       },
     }),
+    createUser: builder.mutation<PostUserRes, PostUserReq>({
+      query: user => ({
+        url: "/create/",
+        method: "POST",
+        body: user,
+      }),
+    }),
   }),
 })
 
-export const { useLoginMutation, useGetUserDetailsQuery } = authApi
+export const {
+  useLoginMutation,
+  useGetUserDetailsQuery,
+  useCreateUserMutation,
+} = authApi

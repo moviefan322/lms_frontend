@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom"
 import type { TeamPlayer } from "../../types/redux"
 import { useErrorHandling } from "../../hooks/useErrorHandling"
 import AddPlayer from "./AddPlayer"
+import { MdModeEdit } from "react-icons/md"
 
 interface TeamRosterProps {
   teamSeasonId: number
@@ -23,6 +24,7 @@ const TeamRoster = ({
   name,
 }: TeamRosterProps) => {
   const [playerRes, setPlayerRes] = useState<any>(null)
+  const [showEditPlayer, setShowEditPlayer] = useState<number | null>(null)
   const [showAddPlayer, setShowAddPlayer] = useState(false)
   const { leagueId, seasonId } = useParams()
   const [deleteTeamPlayer, { isSuccess, isLoading, isError, error }] =
@@ -105,8 +107,12 @@ const TeamRoster = ({
         {teamPlayersData.map((player: TeamPlayer) => (
           <div key={player.id}>
             <li className="list-nodec text-right">
-              {player.name}{" "}
+              <div>{player.name} </div>
+
               <button onClick={() => handleDelete(player.id)}>X</button>
+              <button onClick={() => setShowEditPlayer(player.id)}>
+                <MdModeEdit />
+              </button>
             </li>
           </div>
         ))}

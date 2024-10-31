@@ -84,3 +84,15 @@ export interface Match {
   away_score?: number
   status: string
 }
+
+export interface PostUserReq {
+  email: string
+  password: string
+  name: string
+}
+
+export interface PostUserRes {
+  email: string
+  name: string
+  token: string
+}

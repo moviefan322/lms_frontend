@@ -44,6 +44,8 @@ const EditTeam = ({
       console.error("Failed to update team season:", error)
     }
   }
+  
+  console.log("teamData:", teamData)
 
   return (
     <div>
@@ -75,8 +77,8 @@ const EditTeam = ({
               onChange={e => setCaptain(parseInt(e.target.value))}
             >
               {teamData.team_players.map((player, i) => (
-                <option key={i} value={player.player.id}>
-                  {player.player.name}
+                <option key={i} value={player.id}>
+                  {player.name}
                 </option>
               ))}
             </select>
