@@ -1,17 +1,13 @@
-import {
-  useState,
-  useEffect,
-  JSXElementConstructor,
-  Key,
-  ReactElement,
-  ReactNode,
-  ReactPortal,
-} from "react"
+import { useState, useEffect } from "react"
 import { useCreateTeamMutation } from "../../features/team/teamApiSlice"
 import { useCreateTeamSeasonMutation } from "../../features/teamseason/teamSeasonApiSlice"
-import { useFetchPlayersByLeagueQuery } from "../../features/player/playerApiSlice"
+import {
+  useFetchPlayersByLeagueQuery,
+  useFetchPlayerByIdQuery,
+} from "../../features/player/playerApiSlice"
 import { useErrorHandling } from "../../hooks/useErrorHandling"
 import type { Player } from "../../types/redux"
+import AddPlayer from "./AddPlayer"
 
 interface AddTeamProps {
   leagueId: number
@@ -35,6 +31,13 @@ const AddTeam = ({ leagueId, seasonId }: AddTeamProps) => {
   const [successName, setSuccessName] = useState("")
   const [valError, setValError] = useState("")
   const [showSelect, setShowSelect] = useState(false)
+  const [toggleAddPlayer, setToggleAddPlayer] = useState(false)
+
+  const {
+    data: playersData2,
+    error: playersError2,
+    isLoading: playersLoading2,
+  } = useFetchPlayerByIdQuery(captain)
 
   const {
     data: playersData,
@@ -79,8 +82,8 @@ const AddTeam = ({ leagueId, seasonId }: AddTeamProps) => {
     return res
   }
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const handleSubmit = async () => {
+    console.log("handleSubmit")
     const validationError = checkValidation()
     if (validationError) {
       console.error("Validation error:", validationError)
@@ -126,11 +129,10 @@ const AddTeam = ({ leagueId, seasonId }: AddTeamProps) => {
   if (isTeamLoading || isTeamSeasonLoading || playersLoading)
     return <p>Loading...</p>
 
-  console.log(playersData)
-
+  console.log(playersData2, playersError2, playersLoading2)
   return (
     <div className="flex">
-      <form className="column" onSubmit={handleSubmit}>
+      <div className="flex column center">
         <label htmlFor="name">Name:</label>
         <input
           type="text"
@@ -140,6 +142,7 @@ const AddTeam = ({ leagueId, seasonId }: AddTeamProps) => {
           onChange={e => setName(e.target.value)}
         ></input>
         <label htmlFor="captain">Captain:</label>
+        {playersData2 && playersData2.name}
         {showSelect ? (
           <select value={captain} onChange={e => setCaptain(+e.target.value)}>
             <option value="">--</option>
@@ -152,17 +155,22 @@ const AddTeam = ({ leagueId, seasonId }: AddTeamProps) => {
         ) : (
           <>
             {" "}
-            <button onClick={() => setShowSelect(!showSelect)}>Choose Captain</button>
-            <button>Add New Player</button>
+            <button onClick={() => setShowSelect(!showSelect)}>
+              Choose Captain
+            </button>
+            <button onClick={e => setToggleAddPlayer(!toggleAddPlayer)}>
+              Add New Player
+            </button>
+            {toggleAddPlayer && <AddPlayer sendRes={setCaptain} />}
           </>
         )}
 
-        <button type="submit">Submit</button>
+        <button onClick={handleSubmit}>Submit</button>
         {isTeamError && errorMessage}
         {valError && <p>{valError}</p>}
         {isTeamSeasonError && errorMessageTeamSeason}
         {isTeamSeasonSuccess && <p>{successName} added successfully!</p>}
-      </form>
+      </div>
     </div>
   )
 }

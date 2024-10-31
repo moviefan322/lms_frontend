@@ -87,3 +87,10 @@ nav {
   display: flex;
   justify-content: space-around;
 }
+
+.center {
+  text-align: center;
+  margin: auto;
+  justify-content: center;
+  align-items: center;
+}

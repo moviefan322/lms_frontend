@@ -26,9 +26,6 @@ const SeasonDetail = ({ seasonId, leagueId }: SeasonDetailProps) => {
   const navToManageTeams = () => {
     navigate(`/manage-teams/${leagueId}/${seasonId}`)
   }
-  console.log(data)
-  console.log(error)
-  console.log(isLoading)
 
   if (error) return <p>Error!</p>
 

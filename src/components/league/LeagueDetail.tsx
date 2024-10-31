@@ -18,7 +18,6 @@ const LeagueDetail = ({ id }: LeagueDetailProps) => {
     }
   }
 
-  console.log(data)
   return (
     <div>
       {isLoading && <p>Loading...</p>}

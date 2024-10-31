@@ -48,7 +48,6 @@ const ManageTeams = () => {
     return errorMessage
   }
 
-  console.log(data)
   if (data && seasonData)
     return (
       <>
