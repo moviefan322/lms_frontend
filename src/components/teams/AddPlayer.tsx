@@ -17,22 +17,6 @@ const AddPlayer = ({ sendRes }: AddPlayerProps) => {
 
   const [addUser] = useCreateUserMutation()
 
-//   useEffect(() => {
-//     const fetchUser = async () => {
-//       try {
-//         const res = await addUser({
-//           email,
-//           password: "default",
-//           name,
-//         }).unwrap()
-//         console.log("User added:", res)
-//       } catch (error) {
-//         console.error("Failed to add user:", error)
-//       }
-//     }
-//     if(isSuccess) fetchUser()
-//   }, [isSuccess])
-
   const handleAddPlayer = async () => {
     try {
       const res = await addPlayer({
