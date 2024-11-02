@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useCreatePlayerMutation } from "../../features/player/playerApiSlice"
 import { useCreateUserMutation } from "../../features/auth/authApiSlice"
 import { useErrorHandling } from "../../hooks/useErrorHandling"
