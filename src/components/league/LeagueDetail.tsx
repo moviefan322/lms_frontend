@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useFetchLeagueByIdQuery } from "../../features/league/leagueApiSlice"
 import SeasonDetail from "../season/SeasonDetail"
+import CreateSeason from "../season/CreateSeason"
 
 interface LeagueDetailProps {
   id: number
@@ -17,6 +18,8 @@ const LeagueDetail = ({ id }: LeagueDetailProps) => {
       setExpandedSeason(seasonId)
     }
   }
+
+  console.log("data:", data)
 
   return (
     <div>
@@ -54,6 +57,7 @@ const LeagueDetail = ({ id }: LeagueDetailProps) => {
           </ul>
         </div>
       )}
+      {data && data.seasons.length === 0 && <CreateSeason leagueId={id} />}
     </div>
   )
 }

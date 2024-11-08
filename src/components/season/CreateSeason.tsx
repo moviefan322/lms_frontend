@@ -1,48 +1,74 @@
 import { useState } from "react"
-import {
-  useCreateSeasonMutation,
-} from "../../features/league/leagueApiSlice"
+import { useCreateSeasonMutation } from "../../features/season/seasonApiSlice"
+import { useErrorHandling } from "../../hooks/useErrorHandling"
 
-const CreateLeague = () => {
-  // State to hold the league name input from the user
+interface CreateSeasonProps {
+  leagueId: number
+}
+
+const CreateSeason = ({ leagueId }: CreateSeasonProps) => {
   const [seasonName, setSeasonName] = useState("")
+  const [year, setYear] = useState(new Date().getFullYear())
 
-  // Destructure the createLeague mutation function and status indicators
-  const [createLeague, { isLoading: isCreating, isSuccess, isError, error }] =
+  const [createSeason, { isLoading: isCreating, isSuccess, isError, error }] =
     useCreateSeasonMutation()
+
+  // Use the error handling hook to get an error message JSX
+  const errorMessage = useErrorHandling(error as any)
 
   // Handle the form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    const seasonData = {
+      name: seasonName,
+      year,
+    }
     try {
       // Call the mutation to create a new league
-      await createLeague({ name: seasonName }).unwrap()
+      await createSeason({ leagueId, seasonData }).unwrap()
       setSeasonName("") // Reset the form input
     } catch (err) {
-      console.error("Failed to create league:", err)
+      console.error("Failed to create season:", err)
     }
   }
 
   return (
     <div>
-      <h2>Create a New League</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={seasonName}
-          onChange={e => setSeasonName(e.target.value)}
-          placeholder="League Name"
-          required
-        />
-        <button type="submit" disabled={isCreating}>
-          {isCreating ? "Creating..." : "Create League"}
+      <h2>Create a New Season</h2>
+      <div className="flex column">
+        <div>
+          {" "}
+          <label>Name: </label>
+          <input
+            type="text"
+            value={seasonName}
+            onChange={e => setSeasonName(e.target.value)}
+            placeholder="Season Name"
+            required
+          />
+        </div>
+        <div>
+          {" "}
+          <label>Year: </label>
+          <input
+            type="number"
+            value={year}
+            onChange={e => setYear(parseInt(e.target.value))}
+            placeholder="Year"
+            required
+          />
+        </div>
+
+        <button disabled={isCreating} onClick={() => handleSubmit}>
+          {isCreating ? "Creating..." : "Create Season"}
         </button>
-      </form>
+      </div>
 
       {/* Display status */}
-      {isSuccess && <p>League created successfully!</p>}
+      {isSuccess && <p>Season created successfully!</p>}
+      {isError && errorMessage}
     </div>
   )
 }
 
-export default CreateLeague
+export default CreateSeason
