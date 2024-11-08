@@ -18,19 +18,21 @@ const CreateSeason = ({ leagueId }: CreateSeasonProps) => {
 
   // Handle the form submission
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    console.log("button clicked");
+    e.preventDefault();
     const seasonData = {
       name: seasonName,
       year,
-    }
+    };
     try {
-      // Call the mutation to create a new league
-      await createSeason({ leagueId, seasonData }).unwrap()
-      setSeasonName("") // Reset the form input
+      // Pass { leagueId, ...seasonData } to match the mutation signature
+      await createSeason({ leagueId, ...seasonData }).unwrap();
+      setSeasonName(""); // Reset the form input
     } catch (err) {
-      console.error("Failed to create season:", err)
+      console.error("Failed to create season:", err);
     }
-  }
+  };
+  
 
   return (
     <div>
@@ -59,7 +61,7 @@ const CreateSeason = ({ leagueId }: CreateSeasonProps) => {
           />
         </div>
 
-        <button disabled={isCreating} onClick={() => handleSubmit}>
+        <button disabled={isCreating} onClick={handleSubmit}>
           {isCreating ? "Creating..." : "Create Season"}
         </button>
       </div>
