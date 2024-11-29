@@ -1,11 +1,20 @@
 import { useState } from "react"
-import { useFetchLeaguesQuery, useDeleteLeagueMutation } from "../../features/league/leagueApiSlice"
+import {
+  useFetchLeaguesQuery,
+  useDeleteLeagueMutation,
+} from "../../features/league/leagueApiSlice"
+
 import CreateLeague from "./CreateLeague"
 import LeagueDetail from "./LeagueDetail"
+import ScheduleManager from "../schedule/ScheduleManager"
 
 const League = () => {
   const [showLeagueDetails, setShowLeagueDetails] = useState(null)
-  const { data, error, isLoading } = useFetchLeaguesQuery()
+  const {
+    data: leagueData,
+    error: leagueError,
+    isLoading: leagueLoading,
+  } = useFetchLeaguesQuery()
   const [deleteLeague] = useDeleteLeagueMutation()
   const tokenFromLocalStorage = localStorage.getItem("token")
 
@@ -18,34 +27,54 @@ const League = () => {
   }
 
   const renderErrorMessage = () => {
-    if (error) {
-      if ('status' in error) {
-        // Check if error has a status property (e.g., server error)
-        return <p>Error {error.status}: {JSON.stringify(error.data)}</p>
+    if (leagueError) {
+      if ("status" in leagueError) {
+        // Check if leagueError has a status property (e.g., server leagueError)
+        return (
+          <p>
+            Error {leagueError.status}: {JSON.stringify(leagueError.data)}
+          </p>
+        )
       } else {
-        // Handle other types of errors, like network errors
-        return <p>An unexpected error occurred: {error.message}</p>
+        // Handle other types of leagueErrors, like network leagueErrors
+        return <p>An unexpected leagueError occurred: {leagueError.message}</p>
       }
     }
     return null
   }
 
+  console.log("leagueDATA= ", leagueData)
+  console.log(leagueError)
+
   return (
     <>
-      <div>
-        {isLoading && <p>Loading...</p>}
+      <div style={{ border: "1px solid red" }}>
+        {leagueLoading && <p>Loading...</p>}
         {renderErrorMessage()}
 
         {tokenFromLocalStorage && (
           <p>Token from local storage: {tokenFromLocalStorage}</p>
         )}
-        {data && (
+        {leagueData && (
           <ul>
-            {data.map((league: any) => (
+            {leagueData.map((league: any) => (
               <li key={league.id}>
-                <button onClick={() => setShowLeagueDetails(league.id)}>{league.name}</button> 
+                <button onClick={() => setShowLeagueDetails(league.id)}>
+                  {league.name}
+                </button>
                 <button onClick={() => handleDelete(league.id)}>X</button>
-                {showLeagueDetails === league.id && <LeagueDetail id={league.id} />}
+                {showLeagueDetails === league.id && (
+                  <div key={league.id}>
+                    <LeagueDetail id={league.id} />
+                    {league.seasons.map((season: any) => (
+                      <ScheduleManager
+                        key={league.id + ": " + season.id}
+                        leagueId={league.id}
+                        seasonId={season.id}
+                      />
+                    ))}
+                  </div>
+                )}
               </li>
             ))}
           </ul>

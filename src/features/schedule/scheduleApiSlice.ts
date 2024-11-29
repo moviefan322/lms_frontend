@@ -22,7 +22,7 @@ export const scheduleApi = createApi({
   tagTypes: ["Schedule", "Season"],
   endpoints: builder => ({
     createSchedule: builder.mutation<
-      Schedule,
+      Schedule | [],
       { leagueId: number; seasonId: number } & Partial<Schedule>
     >({
       query: ({ leagueId, seasonId, ...scheduleData }) => ({
@@ -63,14 +63,14 @@ export const scheduleApi = createApi({
       invalidatesTags: ["Schedule"],
     }),
     deleteSchedule: builder.mutation<
-      { leagueId: number; seasonId: number },
-      { leagueId: number; seasonId: number }
+      void, // No response payload expected for DELETE
+      { leagueId: number; seasonId: number; scheduleId: number } // Include scheduleId
     >({
-      query: ({ leagueId, seasonId }) => ({
-        url: `/${leagueId}/seasons/${seasonId}/schedule/`,
+      query: ({ leagueId, seasonId, scheduleId }) => ({
+        url: `/${leagueId}/seasons/${seasonId}/schedule/${scheduleId}/`, // Include scheduleId
         method: "DELETE",
       }),
-      invalidatesTags: ["Schedule"],
+      invalidatesTags: ["Schedule"], // Invalidate schedule cache
     }),
   }),
 })

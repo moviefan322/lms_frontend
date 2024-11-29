@@ -36,34 +36,49 @@ const NewSchedule = ({ leagueId, seasonId }: NewScheduleProps) => {
   }
 
   return (
-    <form>
-      <label>
-        Start Date
-        <input
-          type="date"
-          value={startDate}
-          onChange={e => setStartDate(e.target.value)}
-        />
-      </label>
-      <label>
-        Number of Weeks
-        <input
-          type="number"
-          value={numWeeks}
-          onChange={e => setNumWeeks(parseInt(e.target.value))}
-        />
-      </label>
-      <label>
-        Default Start Time
-        <input
-          type="time"
-          value={defaultStartTime}
-          onChange={e => setDefaultStartTime(e.target.value)}
-        />
-      </label>
+    <div style={styles.container}>
+      <div>
+        <label>
+          Start Date
+          <input
+            type="date"
+            value={startDate}
+            onChange={e => setStartDate(e.target.value)}
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          Number of Weeks
+          <input
+            type="number"
+            value={numWeeks}
+            onChange={e => setNumWeeks(parseInt(e.target.value))}
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          Default Start Time
+          <input
+            type="time"
+            value={defaultStartTime}
+            onChange={e => setDefaultStartTime(e.target.value)}
+          />
+        </label>
+      </div>
       <button onClick={handleSubmit}>Create Schedule</button>
-    </form>
+    </div>
   )
 }
 
 export default NewSchedule
+
+const styles = {
+  container: {
+    border: "1px solid black",
+    padding: "10px",
+    margin: "10px",
+    width: "300px",
+  },
+}

@@ -3,8 +3,7 @@ import League from "../components/league/League"
 
 function Home() {
   const { isLoggedIn, email } = useAppSelector(state => state.auth)
-
-  console.log(isLoggedIn)
+  
   return (
     <div>
       <h1>Home!</h1>
