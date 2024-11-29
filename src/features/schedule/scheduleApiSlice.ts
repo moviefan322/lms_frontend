@@ -72,6 +72,16 @@ export const scheduleApi = createApi({
       }),
       invalidatesTags: ["Schedule"], // Invalidate schedule cache
     }),
+    generateSchedule: builder.mutation<
+      { message: string }, // Expected response: a message indicating success
+      { scheduleId: number } // Parameters required to generate the schedule
+    >({
+      query: ({ scheduleId }) => ({
+        url: `schedule/${scheduleId}/generate/`, // Endpoint for generating the schedule
+        method: "POST", // The endpoint expects a POST request
+      }),
+      invalidatesTags: ["Schedule"], // Invalidate schedule cache to ensure data consistency
+    }),
   }),
 })
 
@@ -81,4 +91,5 @@ export const {
   useUpdateScheduleMutation,
   useUpdateSchedulePartialMutation,
   useDeleteScheduleMutation,
+  useGenerateScheduleMutation,
 } = scheduleApi

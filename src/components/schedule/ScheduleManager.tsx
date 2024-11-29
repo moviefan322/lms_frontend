@@ -1,6 +1,7 @@
 import {
   useFetchScheduleQuery,
   useDeleteScheduleMutation,
+  useGenerateScheduleMutation
 } from "../../features/schedule/scheduleApiSlice"
 import NewSchedule from "./NewSchedule"
 
@@ -11,6 +12,7 @@ interface ScheduleManagerProps {
 
 const ScheduleManager = ({ leagueId, seasonId }: ScheduleManagerProps) => {
   const [deleteScheduleMutation] = useDeleteScheduleMutation()
+  const [generateScheduleMutation] = useGenerateScheduleMutation()
   const {
     data: schedule,
     error,
@@ -25,6 +27,15 @@ const ScheduleManager = ({ leagueId, seasonId }: ScheduleManagerProps) => {
       console.error("Failed to delete schedule:", err);
     }
   };
+
+  const handleGenerate = async (scheduleId: number) => {
+    try {
+      await generateScheduleMutation({ scheduleId }).unwrap();
+      alert("Schedule generated successfully.");
+    } catch (err) {
+      console.error("Failed to generate schedule:", err);
+    }
+  }
 
   if (isLoading) return <p>Loading...</p>
   if (error) return <p>Error loading schedule</p>
@@ -49,7 +60,7 @@ const ScheduleManager = ({ leagueId, seasonId }: ScheduleManagerProps) => {
         <p>{schedule.default_start_time}</p>
         <p>{schedule.num_weeks}</p>
         <p>{schedule.start_date}</p>
-        <button>Auto-Generate Schedule</button>
+        <button onClick={() => handleGenerate(schedule.id)}>Auto-Generate Schedule</button>
         <br /> <br />
         <button>Manually Generate Schedule</button>
         <br /> <br />
