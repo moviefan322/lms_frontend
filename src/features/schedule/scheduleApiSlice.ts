@@ -22,7 +22,7 @@ export const scheduleApi = createApi({
   tagTypes: ["Schedule", "Season"],
   endpoints: builder => ({
     createSchedule: builder.mutation<
-      Schedule | [],
+      Schedule,
       { leagueId: number; seasonId: number } & Partial<Schedule>
     >({
       query: ({ leagueId, seasonId, ...scheduleData }) => ({

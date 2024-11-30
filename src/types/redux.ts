@@ -65,6 +65,7 @@ export interface Schedule {
   default_start_time: string
   num_weeks: number
   start_date: string
+  matchnights: MatchNight[]
 }
 
 export interface MatchNight {
