@@ -80,7 +80,9 @@ export interface Match {
   id: number
   match_night: number
   home_team: number
+  home_team_name: string
   away_team: number
+  away_team_name: string
   home_score?: number
   away_score?: number
   status: string

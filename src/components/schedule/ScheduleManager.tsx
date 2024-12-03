@@ -80,19 +80,20 @@ const ScheduleManager = ({ leagueId, seasonId }: ScheduleManagerProps) => {
           </>
         ) : (
           <>
-          <div>
-            <button onClick={handleView}>View Schedule</button>
-            <div style={{ height: 20 }} />
-            <button onClick={() => handleDelete(schedule.id)}>
-              Delete Schedule
-            </button>
-          </div>
-          {showMatchnights && (
-            <ManageMatchNights
-              leagueId={leagueId}
-              scheduleId={schedule.id}
-            />
-          )}
+            <div>
+              <button onClick={handleView}>View Schedule</button>
+              <div style={{ height: 20 }} />
+              <button onClick={() => handleDelete(schedule.id)}>
+                Delete Schedule
+              </button>
+            </div>
+            {showMatchnights && (
+              <ManageMatchNights
+                leagueId={leagueId}
+                scheduleId={schedule.id}
+                seasonId={seasonId}
+              />
+            )}
           </>
         )}
       </div>

@@ -1,4 +1,3 @@
-import type { MatchNight } from "../../types/redux"
 import { useFetchMatchnightsQuery } from "../../features/matchnight/matchnightApiSlice"
 
 import MatchnightOverviewRow from "./MatchnightOverviewRow"
@@ -6,11 +5,13 @@ import MatchnightOverviewRow from "./MatchnightOverviewRow"
 interface ManageMatchnightsProps {
   leagueId: number
   scheduleId: number
+  seasonId: number
 }
 
 const ManageMatchnights = ({
   leagueId,
   scheduleId,
+  seasonId,
 }: ManageMatchnightsProps) => {
   const { data: matchnights, isLoading } = useFetchMatchnightsQuery({
     leagueId,
@@ -28,7 +29,12 @@ const ManageMatchnights = ({
       <ul>
         {matchnights.map(matchnight => (
           <li key={matchnight.id}>
-            <MatchnightOverviewRow matchnight={matchnight} />
+            <MatchnightOverviewRow
+              matchnight={matchnight}
+              leagueId={leagueId}
+              scheduleId={scheduleId}
+              seasonId={seasonId}
+            />
           </li>
         ))}
       </ul>

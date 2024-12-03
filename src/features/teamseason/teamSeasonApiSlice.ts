@@ -18,7 +18,15 @@ export const teamSeasonApi = createApi({
       return headers
     },
   }),
-  tagTypes: ["TeamSeason", "Season", "League"],
+  tagTypes: [
+    "TeamSeason",
+    "Season",
+    "League",
+    "MatchNight",
+    "Match",
+    "Schedule",
+    "Test",
+  ],
   endpoints: builder => ({
     // Fetch all team seasons
     fetchTeamSeasons: builder.query<
@@ -66,9 +74,12 @@ export const teamSeasonApi = createApi({
         method: "PUT",
         body: teamSeasonData,
       }),
-      invalidatesTags: (result, error, { seasonId }) => [
-        { type: "TeamSeason" },
+      invalidatesTags: (result, error, { id, seasonId }) => [
+        { type: "TeamSeason", id },
+        { type: "MatchNight" },
+        { type: "Match" },
         { type: "Season", id: seasonId },
+        { type: "Schedule" },
       ],
     }),
 
@@ -82,10 +93,8 @@ export const teamSeasonApi = createApi({
         method: "PATCH",
         body: teamSeasonData,
       }),
-      invalidatesTags: (result, error, { seasonId }) => [
-        { type: "TeamSeason" },
-        { type: "Season", id: seasonId },
-      ],
+      // invalidatesTags: ["MatchNight", "Match", "TeamSeason"],
+      invalidatesTags: ["Test"],
     }),
 
     // Delete a team season by ID

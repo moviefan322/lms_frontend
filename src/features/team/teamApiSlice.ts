@@ -18,21 +18,16 @@ export const teamApi = createApi({
       return headers
     },
   }),
-  tagTypes: ["Team"],
-  endpoints: (builder) => ({
-    // Fetch all teams
+  tagTypes: ["Team", "MatchNight", "Schedule", "Season", "TeamSeason"],
+  endpoints: builder => ({
     fetchTeams: builder.query<Team[], number>({
-      query: (leagueId) => `${leagueId}/teams/`,
+      query: leagueId => `${leagueId}/teams/`,
       providesTags: ["Team"],
     }),
-
-    // Fetch a single team by ID
     fetchTeamById: builder.query<Team, { leagueId: number; id: number }>({
       query: ({ leagueId, id }) => `${leagueId}/teams/${id}/`,
-      providesTags: (result, error, { id }) => [{ type: "Team", id }],
+      providesTags: ["Team"],
     }),
-
-    // Create a new team
     createTeam: builder.mutation<Team, { leagueId: number } & Partial<Team>>({
       query: ({ leagueId, ...teamData }) => ({
         url: `${leagueId}/teams/`,
@@ -41,21 +36,17 @@ export const teamApi = createApi({
       }),
       invalidatesTags: ["Team"],
     }),
-
-    // Update a team by ID (full update)
     updateTeam: builder.mutation<
       Team,
       { leagueId: number; id: number } & Partial<Team>
     >({
       query: ({ leagueId, id, ...teamData }) => ({
         url: `${leagueId}/teams/${id}/`,
-        method: "PUT",
+        method: "PATCH",
         body: teamData,
       }),
-      invalidatesTags: (result, error, { id }) => [{ type: "Team", id }],
+      invalidatesTags: ["MatchNight", "Schedule", "Season", "TeamSeason", "Team"],
     }),
-
-    // Partially update a team by ID
     updateTeamPartial: builder.mutation<
       Team,
       { leagueId: number; id: number } & Partial<Team>
@@ -65,10 +56,8 @@ export const teamApi = createApi({
         method: "PATCH",
         body: teamData,
       }),
-      invalidatesTags: (result, error, { id }) => [{ type: "Team", id }],
+      invalidatesTags: ["MatchNight", "Schedule", "Season", "TeamSeason", "Team"],
     }),
-
-    // Delete a team by ID
     deleteTeam: builder.mutation<void, { leagueId: number; id: number }>({
       query: ({ leagueId, id }) => ({
         url: `${leagueId}/teams/${id}/`,
