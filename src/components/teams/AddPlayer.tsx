@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { useCreatePlayerMutation } from "../../features/player/playerApiSlice"
-import { useCreateUserMutation } from "../../features/auth/authApiSlice"
 import { useErrorHandling } from "../../hooks/useErrorHandling"
 
 interface AddPlayerProps {
@@ -15,23 +14,16 @@ const AddPlayer = ({ sendRes }: AddPlayerProps) => {
     useCreatePlayerMutation()
   const errorMessage = useErrorHandling(error as any)
 
-  const [addUser] = useCreateUserMutation()
-
   const handleAddPlayer = async () => {
     try {
       const res = await addPlayer({
         name,
+        email,
         is_active: true,
       }).unwrap()
       console.log("Player added:", res)
 
       sendRes(res.id)
-      const res2 = await addUser({
-        email,
-        password: "default",
-        name,
-      }).unwrap()
-      console.log("User added:", res2)
 
       setName("")
       setEmail("")
