@@ -5,6 +5,7 @@ export interface AuthState {
   token: string | null
   error: string | null
   success: boolean
+  last_login: string | null
   isLoggedIn: boolean
   isNewData: boolean
 }

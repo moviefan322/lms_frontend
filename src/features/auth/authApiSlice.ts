@@ -1,12 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import type { RootState } from "../../app/store"
-import type { PostUserReq, PostUserRes } from "../../types/redux"
 import {
   setToken,
   setUserDetails,
   setError,
   setLoading,
-  logout,
 } from "./authSlice"
 
 const baseUrl = import.meta.env.VITE_BACKEND_URL
@@ -35,43 +33,35 @@ export const authApi = createApi({
         method: "POST",
         body: credentials,
       }),
-      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
         dispatch(setLoading(true))
         try {
           const { data } = await queryFulfilled
-          localStorage.setItem("token", data.token) // Save token to localStorage
-          dispatch(setToken(data.token)) // Store token in Redux state
-          dispatch(setLoading(false))
+          dispatch(setToken(data.token))
         } catch (err) {
           dispatch(setError("Login failed"))
+        } finally {
           dispatch(setLoading(false))
         }
       },
     }),
     getUserDetails: builder.query({
-      query: () => ({
-        url: "/me",
-        method: "GET",
-      }),
+      query: () => "/me",
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         dispatch(setLoading(true))
         try {
           const { data } = await queryFulfilled
-          dispatch(setUserDetails({ email: data.email, name: data.name }))
-          dispatch(setLoading(false))
+          dispatch(setUserDetails({
+            email: data.email,
+            name: data.name,
+            last_login: data.last_login
+          }))
         } catch (err) {
           dispatch(setError("Failed to fetch user details"))
+        } finally {
           dispatch(setLoading(false))
-          dispatch(logout())
         }
       },
-    }),
-    createUser: builder.mutation<PostUserRes, PostUserReq>({
-      query: user => ({
-        url: "/create/",
-        method: "POST",
-        body: user,
-      }),
     }),
   }),
 })
@@ -79,5 +69,4 @@ export const authApi = createApi({
 export const {
   useLoginMutation,
   useGetUserDetailsQuery,
-  useCreateUserMutation,
 } = authApi

@@ -9,7 +9,6 @@ import { useAppDispatch, useAppSelector } from "./app/hooks"
 import { useGetUserDetailsQuery } from "./features/auth/authApiSlice"
 import {
   setToken,
-  setUserDetails,
   selectIsLoggedIn,
 } from "./features/auth/authSlice"
 import Login from "./pages/Login"
@@ -26,17 +25,13 @@ const App = () => {
   const dispatch = useAppDispatch()
 
   const token = localStorage.getItem("token")
-  const { data: userDetails } = useGetUserDetailsQuery(undefined, {
-    skip: !token,
-  })
+  const { data: userDetails } = useGetUserDetailsQuery(token)
 
   useEffect(() => {
     if (token) {
       dispatch(setToken(token))
       if (userDetails) {
-        dispatch(
-          setUserDetails({ email: userDetails.email, name: userDetails.name }),
-        )
+        console.log('DATA: ' + JSON.stringify(userDetails))
       }
     }
   }, [token, userDetails, dispatch])

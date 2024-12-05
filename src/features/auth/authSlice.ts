@@ -15,6 +15,7 @@ const initialState: AuthState = {
   token,
   error: null,
   success: false,
+  last_login: null,
   isLoggedIn: !!token,
   isNewData: false,
 }
@@ -33,12 +34,14 @@ export const authSlice = createAppSlice({
       state.email = null
       state.name = null
       state.isLoggedIn = false
+      state.error = null
       localStorage.removeItem("token")
     }),
     setUserDetails: create.reducer(
-      (state, action: PayloadAction<{ email: string; name: string }>) => {
+      (state, action: PayloadAction<{ email: string; name: string, last_login: string | null }>) => {
         state.email = action.payload.email
         state.name = action.payload.name
+        state.last_login = action.payload.last_login
       },
     ),
     setError: create.reducer((state, action: PayloadAction<string | null>) => {
